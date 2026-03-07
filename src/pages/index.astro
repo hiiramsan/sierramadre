@@ -1,17 +1,134 @@
 ---
-
+import "../styles/global.css";
+import Navbar from '../components/Navbar.astro';
+import Hero from '../components/Hero.astro';
+import StorySection from '../components/StorySection.astro';
+import CollectionSection from '../components/CollectionSection.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <title>Bacanora Sierra Madre</title>
+  </head>
+  <body>
+    <Navbar />
+    <Hero />
+    <StorySection />
+    <CollectionSection />
+
+    <script>
+      import { gsap } from "gsap";
+      import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+      gsap.registerPlugin(ScrollTrigger);
+
+      // ── 1. HERO EXIT — faster (50vh pin distance) ─────────────────────
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: "#hero-section",
+          start: "top top",
+          end: "+=50%",
+          scrub: 1,
+          pin: true,
+          anticipatePin: 1,
+        },
+      })
+        .to("#hero-text",   { opacity: 0, y: -60, ease: "power2.in",  duration: 0.5 })
+        .to("#hero-bottle", { opacity: 0, y:  80, ease: "power1.in",  duration: 0.7 }, "<0.2")
+        .to("#hero-card",   { opacity: 0, x: -80, ease: "power2.in",  duration: 0.5 }, "<");
+
+      // ── 2. CANVAS FRAME SETUP ─────────────────────────────────────────
+      const FRAME_COUNT = 86;
+      const canvas = document.getElementById("frame-canvas") as HTMLCanvasElement;
+      const ctx     = canvas.getContext("2d")!;
+      let   activeFrame = 0;
+
+      function paintFrame(idx: number) {
+        const img = frameImages[idx];
+        if (!img?.complete || !img.naturalWidth) return;
+        const cw = canvas.width, ch = canvas.height;
+        // cover: fill card edge-to-edge, no black bars
+        const ratio = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+        const x = (cw - img.naturalWidth  * ratio) / 2;
+        const y = (ch - img.naturalHeight * ratio) / 2;
+        ctx.clearRect(0, 0, cw, ch);
+        ctx.drawImage(img, x, y, img.naturalWidth * ratio, img.naturalHeight * ratio);
+      }
+
+      // Preload all frames
+      const frameImages: HTMLImageElement[] = [];
+      for (let i = 0; i < FRAME_COUNT; i++) {
+        const img = new Image();
+        img.src = `/frames/ezgif-frame-${String(i + 1).padStart(3, "0")}.jpg`;
+        img.onload = () => { if (i === 0) paintFrame(0); };
+        frameImages.push(img);
+      }
+
+      // ── 3. STORY SECTION ─────────────────────────────────────────────
+      // Fast animation: 86 frames × 8px = 688px scroll for the full spin
+      // Text reveals concurrently starting from frame 1, finishing at last frame
+      // Extra hold: 350px so user can read before scrolling continues
+      const framePx = FRAME_COUNT * 8;    //  688 px — fast spin
+      const holdPx  = 350;                //  350 px — reading pause
+      const totalPx = framePx + holdPx;   // 1038 px total pin
+
+      // Story text: scroll-driven opacity — starts at pin-lock, fully visible at 50% of pin
+      gsap.set("#story-text", { opacity: 0 });
+
+      ScrollTrigger.create({
+        trigger:       "#story-section",
+        start:         "top top",
+        end:           `+=${totalPx}`,
+        pin:           true,
+        scrub:         0.4,
+        anticipatePin: 1,
+        onUpdate(self) {
+          const p = self.progress;
+          const frameRatio = framePx / totalPx;
+
+          // frames 0 → 85
+          const frameProgress = Math.min(p / frameRatio, 1);
+          const idx = Math.min(
+            Math.round(frameProgress * (FRAME_COUNT - 1)),
+            FRAME_COUNT - 1
+          );
+          if (idx !== activeFrame) {
+            activeFrame = idx;
+            paintFrame(idx);
+          }
+
+          // text: fade in from progress 0 → 0.5 (first half of pin distance)
+          const textEl = document.getElementById("story-text") as HTMLElement;
+          textEl.style.opacity = String(Math.min(p / 0.5, 1));
+        },
+      });
+      // ── 4. COLLECTION SECTION entrance ──────────────────────────────────
+      gsap.fromTo(".collection-bottle",
+        { opacity: 0, y: 100 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.9,
+          ease: "power3.out",
+          stagger: 0.15,
+          scrollTrigger: {
+            trigger: "#collection-section",
+            start: "top 75%",
+            end: "bottom 25%",
+            // Replay the entrance when entering from either direction.
+            toggleActions: "restart none restart reset",
+          },
+        }
+      );
+    </script>
+  </body>
 </html>
