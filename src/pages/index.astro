@@ -4,6 +4,7 @@ import Navbar from '../components/Navbar.tsx';
 import Hero from '../components/Hero.tsx';
 import StorySection from '../components/StorySection.tsx';
 import CollectionSection from '../components/CollectionSection.tsx';
+import ContactFooter from '../components/ContactFooter.tsx';
 ---
 
 <html lang="es">
@@ -24,6 +25,7 @@ import CollectionSection from '../components/CollectionSection.tsx';
     <Hero />
     <StorySection />
     <CollectionSection />
+    <ContactFooter />
 
     <script>
       import { gsap } from "gsap";
@@ -129,6 +131,38 @@ import CollectionSection from '../components/CollectionSection.tsx';
           },
         }
       );
+
+      // Switch navbar text color when the navbar sits over the white contact section.
+      const navEl = document.getElementById("site-navbar");
+      const contactEl = document.getElementById("contact-section");
+
+      if (navEl && contactEl) {
+        let ticking = false;
+
+        const updateNavbarTheme = () => {
+          const navRect = navEl.getBoundingClientRect();
+          const contactRect = contactEl.getBoundingClientRect();
+          const navProbeY = navRect.top + navRect.height * 0.65;
+          const isOverContact = contactRect.top <= navProbeY && contactRect.bottom >= navProbeY;
+
+          navEl.setAttribute("data-theme", isOverContact ? "light" : "dark");
+        };
+
+        const scheduleThemeUpdate = () => {
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            updateNavbarTheme();
+            ticking = false;
+          });
+        };
+
+        window.addEventListener("scroll", scheduleThemeUpdate, { passive: true });
+        window.addEventListener("resize", scheduleThemeUpdate);
+        ScrollTrigger.addEventListener("refresh", scheduleThemeUpdate);
+
+        updateNavbarTheme();
+      }
     </script>
   </body>
 </html>

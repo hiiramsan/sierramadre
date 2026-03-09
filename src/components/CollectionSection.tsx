@@ -7,7 +7,7 @@ const bottles = [
 
 export default function CollectionSection() {
   return (
-    <section id="collection-section" className="relative w-full min-h-screen bg-[#111a10] overflow-hidden flex flex-col">
+    <section id="collection-section" className="relative w-full h-screen bg-[#111a10] overflow-hidden flex flex-col pb-10">
       <span
         aria-hidden="true"
         className="pointer-events-none select-none absolute inset-0 flex items-center justify-center font-display italic text-[22vw] text-white/4 leading-none whitespace-nowrap z-0"
@@ -20,9 +20,9 @@ export default function CollectionSection() {
         <h2 className="font-display italic text-5xl md:text-6xl text-white leading-none">Nuestra Colección</h2>
       </div>
 
-      <div id="collection-grid" className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-0 px-6 md:px-10 flex-1 items-center content-center">
+      <div id="collection-grid" className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-8 px-6 md:px-12 flex-1 items-center content-center">
         {bottles.map((bottle, index) => (
-          <div key={bottle.name} className="collection-bottle flex flex-col items-center py-6" data-delay={index * 120}>
+          <div key={bottle.name} className="collection-bottle flex flex-col items-center py-8 md:py-10 px-2 md:px-3" data-delay={index * 120}>
             <img
               src={`/images/${bottle.img}`}
               alt={bottle.alt}
