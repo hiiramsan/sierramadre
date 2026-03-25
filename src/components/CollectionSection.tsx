@@ -7,29 +7,29 @@ const bottles = [
 
 export default function CollectionSection() {
   return (
-    <section id="collection-section" className="relative w-full h-screen bg-[#111a10] overflow-hidden flex flex-col pb-10">
+    <section id="collection-section" className="relative w-full min-h-[720px] md:h-screen bg-[#111a10] overflow-hidden flex flex-col pb-10">
       <span
         aria-hidden="true"
-        className="pointer-events-none select-none absolute inset-0 flex items-center justify-center font-display italic text-[22vw] text-white/4 leading-none whitespace-nowrap z-0"
+        className="pointer-events-none select-none absolute inset-0 flex items-center justify-center font-display italic text-[28vw] sm:text-[22vw] text-white/4 leading-none whitespace-nowrap z-0"
       >
         artesanal
       </span>
 
-      <div className="relative z-10 px-10 md:px-16 pt-20 pb-10">
-        <p className="text-amber-400 tracking-[0.3em] text-lg uppercase font-serif-elegant mb-1">EXPLORA</p>
-        <h2 className="font-display italic text-5xl md:text-6xl text-white leading-none">Nuestra Colección</h2>
+      <div className="relative z-10 px-6 sm:px-10 md:px-16 pt-16 sm:pt-20 pb-8 sm:pb-10">
+        <p className="text-amber-400 tracking-[0.26em] sm:tracking-[0.3em] text-sm sm:text-lg uppercase font-serif-elegant mb-1">EXPLORA</p>
+        <h2 className="font-display italic text-3xl sm:text-5xl md:text-6xl text-white leading-none">Nuestra Colección</h2>
       </div>
 
-      <div id="collection-grid" className="relative z-10 grid grid-cols-2 md:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-8 px-6 md:px-12 flex-1 items-center content-center">
+      <div id="collection-grid" className="relative z-10 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-8 px-6 md:px-12 flex-1 items-center content-center">
         {bottles.map((bottle, index) => (
-          <div key={bottle.name} className="collection-bottle flex flex-col items-center py-8 md:py-10 px-2 md:px-3" data-delay={index * 120}>
+          <div key={bottle.name} className="collection-bottle flex flex-col items-center py-6 sm:py-8 md:py-10 px-2 md:px-3" data-delay={index * 120}>
             <img
               src={`/images/${bottle.img}`}
               alt={bottle.alt}
-              className="bottle-img w-[80%] md:w-[85%] max-w-85 object-contain drop-shadow-2xl"
+              className="bottle-img w-[70%] sm:w-[80%] md:w-[85%] max-w-85 object-contain drop-shadow-2xl"
             />
             <div className="w-full px-4 pt-5 text-center">
-              <h3 className="font-display italic text-2xl md:text-3xl text-white leading-tight">
+              <h3 className="font-display italic text-xl sm:text-2xl md:text-3xl text-white leading-tight">
                 <br />
                 {bottle.name}
               </h3>
