@@ -1,4 +1,13 @@
 export default function Navbar() {
+
+  const handleNavClick = (sectionId: String) => {
+    if(sectionId === "hero") {
+      window.scrollTo({ top: 0, behavior: 'smooth'});
+    } else {
+
+    }
+  }
+
   return (
     <nav
       id="site-navbar"
@@ -14,17 +23,17 @@ export default function Navbar() {
       </a>
 
       <ul className="relative flex items-center gap-10">
-        <li><a href="#hero-section" className="nav-link font-[Montserrat] text-[11px] tracking-[0.25em] uppercase transition-colors duration-300">Bacanora</a></li>
-        <li><a href="#story-section" className="nav-link font-[Montserrat] text-[11px] tracking-[0.25em] uppercase transition-colors duration-300">Origen</a></li>
+        <li><a href="#" onClick={(e)=> { e.preventDefault(); handleNavClick("hero")}} className="nav-link font-[Montserrat] text-[11px] tracking-[0.25em] uppercase transition-colors duration-300">Bacanora</a></li>
+        <li><a href="#origin-section" className="nav-link font-[Montserrat] text-[11px] tracking-[0.25em] uppercase transition-colors duration-300">Origen</a></li>
         <li><a href="#collection-section" className="nav-link font-[Montserrat] text-[11px] tracking-[0.25em] uppercase transition-colors duration-300">Coleccion</a></li>
         <li><a href="#contact-section" className="nav-link font-[Montserrat] text-[11px] tracking-[0.25em] uppercase transition-colors duration-300">Contacto</a></li>
       </ul>
 
       <a
-        href="#contact-section"
+        href="https://wa.me/526441234567" target="_blank"
         className="nav-link nav-link-contact relative font-[Montserrat] text-[11px] tracking-[0.25em] uppercase transition-colors duration-300 flex items-center gap-2"
       >
-        Contacto
+        ordenar
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="nav-icon">
           <path d="M2 7h10M8 3l4 4-4 4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
         </svg>

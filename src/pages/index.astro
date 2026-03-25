@@ -5,6 +5,7 @@ import Hero from '../components/Hero.tsx';
 import StorySection from '../components/StorySection.tsx';
 import CollectionSection from '../components/CollectionSection.tsx';
 import ContactFooter from '../components/ContactFooter.tsx';
+import InfoSection from "../components/InfoSection";
 ---
 
 <html lang="es">
@@ -23,7 +24,7 @@ import ContactFooter from '../components/ContactFooter.tsx';
   <body>
     <Navbar />
     <Hero />
-    <StorySection />
+    <InfoSection />
     <CollectionSection />
     <ContactFooter />
 
@@ -48,72 +49,42 @@ import ContactFooter from '../components/ContactFooter.tsx';
         .to("#hero-bottle", { opacity: 0, y:  80, ease: "power1.in",  duration: 0.7 }, "<0.2")
         .to("#hero-card",   { opacity: 0, x: -80, ease: "power2.in",  duration: 0.5 }, "<");
 
-      // ── 2. CANVAS FRAME SETUP ─────────────────────────────────────────
-      const FRAME_COUNT = 86;
-      const canvas = document.getElementById("frame-canvas") as HTMLCanvasElement;
-      const ctx     = canvas.getContext("2d")!;
-      let   activeFrame = 0;
+      // ── 2. ORIGIN SECTION ──────────────────────────────────────────────
+      const originBottle = document.getElementById("origin-bottle") as HTMLElement | null;
+      const originText = document.getElementById("origin-text") as HTMLElement | null;
+      const originMap = document.getElementById("origin-map") as HTMLElement | null;
 
-      function paintFrame(idx: number) {
-        const img = frameImages[idx];
-        if (!img?.complete || !img.naturalWidth) return;
-        const cw = canvas.width, ch = canvas.height;
-        // cover: fill card edge-to-edge, no black bars
-        const ratio = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
-        const x = (cw - img.naturalWidth  * ratio) / 2;
-        const y = (ch - img.naturalHeight * ratio) / 2;
-        ctx.clearRect(0, 0, cw, ch);
-        ctx.drawImage(img, x, y, img.naturalWidth * ratio, img.naturalHeight * ratio);
+      if (originBottle && originText && originMap) {
+        gsap.set(originText, { opacity: 0, y: 34 });
+
+        ScrollTrigger.create({
+          trigger: "#story-section",
+          start: "top top",
+          end: "+=1200",
+          pin: true,
+          scrub: 0.55,
+          anticipatePin: 1,
+          onUpdate(self) {
+            const p = self.progress;
+
+            // Move bottle through a curved route over the map.
+            const x = gsap.utils.interpolate(-20, 260, p);
+            const y = gsap.utils.interpolate(30, -130, p);
+            const rot = gsap.utils.interpolate(-6, 8, p);
+            const scale = gsap.utils.interpolate(0.94, 1.05, p);
+
+            originBottle.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg) scale(${scale})`;
+            originMap.style.transform = `scale(${gsap.utils.interpolate(1, 1.09, p)}) translateY(${gsap.utils.interpolate(0, -26, p)}px)`;
+
+            const textOpacity = gsap.utils.clamp(0, 1, (p - 0.18) / 0.35);
+            const textY = gsap.utils.interpolate(34, 0, gsap.utils.clamp(0, 1, (p - 0.14) / 0.34));
+            originText.style.opacity = String(textOpacity);
+            originText.style.transform = `translateY(${textY}px)`;
+          },
+        });
       }
 
-      // Preload all frames
-      const frameImages: HTMLImageElement[] = [];
-      for (let i = 0; i < FRAME_COUNT; i++) {
-        const img = new Image();
-        img.src = `/frames/ezgif-frame-${String(i + 1).padStart(3, "0")}.jpg`;
-        img.onload = () => { if (i === 0) paintFrame(0); };
-        frameImages.push(img);
-      }
-
-      // ── 3. STORY SECTION ─────────────────────────────────────────────
-      // Fast animation: 86 frames × 8px = 688px scroll for the full spin
-      // Text reveals concurrently starting from frame 1, finishing at last frame
-      // Extra hold: 350px so user can read before scrolling continues
-      const framePx = FRAME_COUNT * 8;    //  688 px — fast spin
-      const holdPx  = 350;                //  350 px — reading pause
-      const totalPx = framePx + holdPx;   // 1038 px total pin
-
-      // Story text: scroll-driven opacity — starts at pin-lock, fully visible at 50% of pin
-      gsap.set("#story-text", { opacity: 0 });
-
-      ScrollTrigger.create({
-        trigger:       "#story-section",
-        start:         "top top",
-        end:           `+=${totalPx}`,
-        pin:           true,
-        scrub:         0.4,
-        anticipatePin: 1,
-        onUpdate(self) {
-          const p = self.progress;
-          const frameRatio = framePx / totalPx;
-
-          // frames 0 → 85
-          const frameProgress = Math.min(p / frameRatio, 1);
-          const idx = Math.min(
-            Math.round(frameProgress * (FRAME_COUNT - 1)),
-            FRAME_COUNT - 1
-          );
-          if (idx !== activeFrame) {
-            activeFrame = idx;
-            paintFrame(idx);
-          }
-
-          // text: fade in from progress 0 → 0.5 (first half of pin distance)
-          const textEl = document.getElementById("story-text") as HTMLElement;
-          textEl.style.opacity = String(Math.min(p / 0.5, 1));
-        },
-      });
-      // ── 4. COLLECTION SECTION entrance ──────────────────────────────────
+      // ── 3. COLLECTION SECTION entrance ──────────────────────────────────
       gsap.fromTo(".collection-bottle",
         { opacity: 0, y: 100 },
         {

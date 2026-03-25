@@ -16,7 +16,7 @@ export default function CollectionSection() {
       </span>
 
       <div className="relative z-10 px-10 md:px-16 pt-20 pb-10">
-        <p className="text-amber-400 tracking-[0.3em] text-sm uppercase font-serif-elegant mb-1">EXPLORA</p>
+        <p className="text-amber-400 tracking-[0.3em] text-lg uppercase font-serif-elegant mb-1">EXPLORA</p>
         <h2 className="font-display italic text-5xl md:text-6xl text-white leading-none">Nuestra Colección</h2>
       </div>
 
