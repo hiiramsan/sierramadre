@@ -6,14 +6,17 @@
 }
 
 html {
-    scroll-behavior: smooth;
+  scroll-behavior: smooth;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #000;
-    color: #fff;
-    overflow-x: hidden;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #000;
+  color: #fff;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 @layer components {
@@ -36,6 +39,8 @@ body {
   .site-navbar .nav-link {
     position: relative;
     padding-bottom: 4px;
+    display: inline-flex;
+    align-items: center;
   }
 
   .site-navbar .nav-link::after {

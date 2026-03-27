@@ -12,7 +12,7 @@ import InfoSection from "../components/InfoSection";
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -68,7 +68,8 @@ import InfoSection from "../components/InfoSection";
             const p = self.progress;
 
             // Move bottle through a curved route over the map.
-            const x = gsap.utils.interpolate(-20, 260, p);
+            const maxX = Math.min(260, window.innerWidth * 0.35);
+            const x = gsap.utils.interpolate(-20, maxX, p);
             const y = gsap.utils.interpolate(30, -130, p);
             const rot = gsap.utils.interpolate(-6, 8, p);
             const scale = gsap.utils.interpolate(0.94, 1.05, p);
